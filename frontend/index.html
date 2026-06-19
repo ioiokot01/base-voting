@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onchain Voting · Base</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="header">
+        <h1>🗳️ Onchain Voting</h1>
+        <p class="subtitle">Create polls and vote on Base. One vote per wallet.</p>
+        <button id="connectBtn" class="btn">Connect Wallet</button>
+        <p id="account" class="account hidden"></p>
+      </header>
+
+      <section id="createCard" class="create-card hidden">
+        <h2>Create a proposal</h2>
+        <input id="titleInput" type="text" maxlength="200" placeholder="Question / title…" />
+        <div id="optionInputs" class="option-inputs">
+          <input class="opt" type="text" maxlength="100" placeholder="Option 1" />
+          <input class="opt" type="text" maxlength="100" placeholder="Option 2" />
+        </div>
+        <div class="create-row">
+          <button id="addOptionBtn" class="btn btn-ghost">+ Add option</button>
+          <button id="createBtn" class="btn">Create proposal</button>
+        </div>
+      </section>
+
+      <p id="status" class="status"></p>
+
+      <section class="list-section">
+        <div class="list-head">
+          <h2>Proposals <span id="count" class="counts"></span></h2>
+          <button id="refreshBtn" class="btn btn-ghost" disabled>Refresh</button>
+        </div>
+        <div id="proposals" class="proposals"></div>
+        <p id="empty" class="empty">No proposals yet — create the first one!</p>
+      </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
