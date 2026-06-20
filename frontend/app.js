@@ -25,6 +25,7 @@ const MAX_OPTIONS = 10;
 // ---------------------------------------------------------------------------
 
 let provider, signer, contract, account;
+let allProposals = []; // cached {id, p, voted, choice}
 
 const els = {
   connectBtn: document.getElementById("connectBtn"),
@@ -39,6 +40,7 @@ const els = {
   refreshBtn: document.getElementById("refreshBtn"),
   proposals: document.getElementById("proposals"),
   empty: document.getElementById("empty"),
+  search: document.getElementById("searchInput"),
 };
 
 // ---------------------------------------------------------------------------
@@ -102,19 +104,21 @@ async function refresh() {
   setStatus("Loading…");
   try {
     const count = Number(await contract.proposalCount());
-    els.count.textContent = count ? `(${count})` : "";
 
     if (count === 0) {
+      allProposals = [];
+      els.count.textContent = "";
+      els.search.classList.add("hidden");
       els.proposals.innerHTML = "";
+      els.empty.textContent = "No proposals yet — create the first one!";
       els.empty.classList.remove("hidden");
       setStatus("");
       return;
     }
-    els.empty.classList.add("hidden");
 
     // Load all proposals (newest first) along with the caller's vote status.
     const ids = [...Array(count).keys()].reverse();
-    const data = await Promise.all(
+    allProposals = await Promise.all(
       ids.map(async (id) => {
         const p = await contract.getProposal(id);
         const voted = await contract.hasVoted(id, account);
@@ -124,12 +128,30 @@ async function refresh() {
       })
     );
 
-    els.proposals.innerHTML = "";
-    data.forEach(renderProposal);
+    els.search.classList.remove("hidden");
+    render();
     setStatus("");
   } catch (err) {
     setStatus(err.shortMessage || err.message || "Failed to load.", "error");
   }
+}
+
+function render() {
+  const q = els.search.value.trim().toLowerCase();
+  const visible = q
+    ? allProposals.filter((x) => x.p.title.toLowerCase().includes(q))
+    : allProposals;
+
+  els.count.textContent = `(${visible.length})`;
+  els.proposals.innerHTML = "";
+
+  if (visible.length === 0) {
+    els.empty.textContent = "No proposals match your search.";
+    els.empty.classList.remove("hidden");
+    return;
+  }
+  els.empty.classList.add("hidden");
+  visible.forEach(renderProposal);
 }
 
 function renderProposal({ id, p, voted, choice }) {
@@ -287,6 +309,7 @@ function resetCreateForm() {
 els.connectBtn.addEventListener("click", connect);
 els.createBtn.addEventListener("click", createProposal);
 els.refreshBtn.addEventListener("click", refresh);
+els.search.addEventListener("input", render);
 els.addOptionBtn.addEventListener("click", addOptionInput);
 
 if (window.ethereum) {

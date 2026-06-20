@@ -135,6 +135,22 @@ h2 {
   font-weight: 400;
 }
 
+.search {
+  width: 100%;
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: inherit;
+  margin-top: 12px;
+}
+
+.search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 .proposals {
   display: flex;
   flex-direction: column;
