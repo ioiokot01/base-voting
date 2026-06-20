@@ -151,4 +151,29 @@ describe("Voting", function () {
       );
     });
   });
+
+  describe("Boundaries", function () {
+    it("accepts exactly MAX_OPTIONS options", async function () {
+      const { voting } = await deploy();
+      const ten = Array.from({ length: 10 }, (_, i) => "opt" + i);
+      await voting.createProposal("Ten options", ten);
+      expect((await voting.getProposal(0)).options).to.have.lengthOf(10);
+    });
+
+    it("rejects a title over the max length", async function () {
+      const { voting } = await deploy();
+      const longTitle = "x".repeat(201);
+      await expect(
+        voting.createProposal(longTitle, ["a", "b"])
+      ).to.be.revertedWith("Title too long");
+    });
+
+    it("rejects an option over the max length", async function () {
+      const { voting } = await deploy();
+      const longOpt = "y".repeat(101);
+      await expect(
+        voting.createProposal("ok", ["a", longOpt])
+      ).to.be.revertedWith("Option too long");
+    });
+  });
 });
