@@ -224,6 +224,14 @@ h2 {
   font-weight: 700;
 }
 
+.option.leading .bar-fill {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.option.leading .option-label {
+  font-weight: 700;
+}
+
 .proposal-foot {
   display: flex;
   justify-content: space-between;

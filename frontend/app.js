@@ -151,18 +151,25 @@ function renderProposal({ id, p, voted, choice }) {
 
   card.append(title, meta);
 
+  const maxCount = counts.length ? Math.max(...counts) : 0;
+
   p.options.forEach((label, i) => {
     const pct = total > 0 ? Math.round((counts[i] / total) * 100) : 0;
+    const leading = total > 0 && counts[i] === maxCount;
 
     const opt = document.createElement("div");
-    opt.className = "option" + (voted && choice === i ? " chosen" : "");
+    opt.className =
+      "option" +
+      (voted && choice === i ? " chosen" : "") +
+      (leading ? " leading" : "");
 
     const row = document.createElement("div");
     row.className = "option-row";
 
     const lbl = document.createElement("span");
     lbl.className = "option-label";
-    lbl.textContent = label + (voted && choice === i ? " ✓" : "");
+    lbl.textContent =
+      label + (voted && choice === i ? " ✓" : "") + (leading ? " 👑" : "");
 
     const pctEl = document.createElement("span");
     pctEl.className = "option-pct";
